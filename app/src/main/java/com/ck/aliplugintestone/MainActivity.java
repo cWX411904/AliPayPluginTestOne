@@ -1,7 +1,9 @@
 package com.ck.aliplugintestone;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,12 +21,22 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
+    static final String ACTION = "com.ck.aliplugintestone.Receiver1.PLUGIN_ACTION";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PluginManager.getInstance().setContext(this);
+        registerReceiver(mReceiver, new IntentFilter(ACTION));
     }
+
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, " 我是宿主，收到你的消息,握手完成!", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public void load(View view) {
         loadPlugin();
@@ -73,5 +85,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProxyActivity.class);
         intent.putExtra("className", PluginManager.getInstance().getPackageInfo().activities[0].name);
         startActivity(intent);
+    }
+
+    public void sendBroadCast(View view) {
+        Toast.makeText(getApplicationContext(), "我是宿主  插件插件!收到请回答!!  1", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent();
+        intent.setAction("com.ck.taopiaopiao.MainActivity");
+        sendBroadcast(intent);
     }
 }
